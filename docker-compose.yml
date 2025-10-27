@@ -1,0 +1,32 @@
+services:
+  app:
+    container_name: blog_project
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8096:80"
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/php.ini
+    restart: always
+    networks:
+      - gp-shared-net
+  vite:
+      image: node:20
+      container_name: vite_server_blog_project
+      working_dir: /var/www/html
+      ports:
+          - "5173:5173" # Vite ডিফল্ট পোর্ট
+      volumes:
+          - .:/var/www/html
+      restart: always
+      command: tail -f /dev/null
+      networks:
+          - gp-shared-net
+
+networks:
+  gp-shared-net:
+    external: true
